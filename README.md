@@ -25,9 +25,29 @@ This is where the business logic of interacting with vscode should live. Check o
 This is just a regular vite/svelte app + tailwind with a few notable exceptions. The `vscode` api is available as a global to send messages (see `lib/Messages.ts`).
 
 ### Managing state
-The default way to send state back and forth is via messages, which is covered in the official docs. I wanted to abstract things a little, so I'm working on a pattern so I can think less.
+The default way to send state back and forth is via messages, which is covered in the official docs. On the svelte side, that means handling the messages like this:
 
-The two main points of interest here are the `State` class in the extension and the `useVscodeState` rune in svelte. These are intended as a bonded pair so the two can seamlessly pass state back and forth. 
+```svelte
+<script lang="ts">
+	function handleMessage({ message }: MessageEvent) {
+		switch (message.command) {
+			case 'foo':
+			 	doBar(message.content)
+				break
+		}
+	}
+
+	function sendMessage() {
+		vscode.postMessage({ command: 'baz', content: 'boz' })
+	}
+</script>
+
+<svelte:window on:message={handleMessage} />
+
+<button onclick={sendMessage}>Send</button>
+```
+
+But that's a little clunky and I wanted to abstract things a little, so I'm working on a pattern so I can think less. The two main points of interest here are the `State` class in the extension and the `useVscodeState` rune in svelte. These are intended as a bonded pair so the two can seamlessly pass state back and forth. 
 
 The actual app state is just a POJO, vaguely inspired by streamlit's session state. There's an interface in `types.ts` for the actual data that you can add to. The `State` class lets you update those values and does 2 things:
 1. Persists it in the extension's workspace storage
