@@ -1,0 +1,125 @@
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+/* @import "tailwindcss/preflight.css" layer(base);  */ /* Disabling preflight to conform to vscode styles */
+
+@theme {
+	--breakpoint-xs: 430px;
+
+	--color-vscode-editor-background: var(--vscode-editor-background);
+	--color-vscode-editor-foreground: var(--vscode-editor-foreground);
+	--color-vscode-editor-code: var(--vscode-editor-code);
+
+	--color-vscode-button-background: var(--vscode-button-background);
+	--color-vscode-button-foreground: var(--vscode-button-foreground);
+	--color-vscode-button-secondaryBackground: var(--vscode-button-secondaryBackground);
+	--color-vscode-button-secondaryForeground: var(--vscode-button-secondaryForeground);
+	--color-vscode-button-hoverBackground: var(--vscode-button-hoverBackground);
+	--color-vscode-button-hoverForeground: var(--vscode-button-hoverForeground);
+	--color-vscode-button-border: var(--vscode-button-border);
+
+	--color-vscode-input-background: var(--vscode-input-background);
+	--color-vscode-input-foreground: var(--vscode-input-foreground);
+}
+
+:root {
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+
+	color-scheme: light dark;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5 {
+	@apply m-0;
+}
+
+a {
+	font-weight: 500;
+	color: #646cff;
+	text-decoration: inherit;
+}
+a:hover {
+	color: #535bf2;
+}
+
+body {
+	@apply bg-vscode-editor-background m-0 p-0 flex min-h-[100vh];
+}
+
+h1 {
+	font-size: 3.2em;
+	line-height: 1.1;
+}
+
+pre {
+	@apply whitespace-break-spaces;
+}
+
+pre:has(> code) {
+	@apply p-4 bg-vscode-editor-code rounded;
+}
+
+.card {
+	padding: 2em;
+}
+
+#app {
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 0;
+	text-align: center;
+}
+
+.logo {
+	height: 6em;
+	padding: 1.5em;
+	will-change: filter;
+	transition: filter 300ms;
+}
+.logo:hover {
+	filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.svelte:hover {
+	filter: drop-shadow(0 0 2em #ff3e00aa);
+}
+
+div.chat-input[contenteditable] {
+	@apply focus:outline-none;
+}
+
+div.chat-bg-gray-200.disabled {
+	@apply pointer-events-none;
+}
+
+input,
+div.chat-input[contenteditable] {
+	@apply bg-vscode-input-background text-vscode-input-foreground border-none text-left;
+}
+
+button {
+	@apply bg-vscode-button-secondaryBackground text-vscode-button-secondaryForeground border-vscode-button-border cursor-pointer;
+	@apply px-2 py-1 rounded disabled:opacity-50 border-none;
+}
+
+button.primary {
+	@apply bg-vscode-button-background text-vscode-button-foreground;
+}
+
+button.danger {
+	@apply bg-red-500 hover:bg-red-400 text-white;
+}
