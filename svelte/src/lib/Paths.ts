@@ -1,3 +1,3 @@
 export function image(filename: string) {
-	return `<imagePath>/${filename}`
+	return `${imagePath}/${filename}`
 }
