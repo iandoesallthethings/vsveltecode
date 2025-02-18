@@ -3,9 +3,9 @@
 	import viteLogo from '../assets/vite.svg'
 	import vscodeLogo from '../assets/vscode.svg'
 	import Counter from '../components/Counter.svelte'
-	import Image from '../components/Image.svelte'
 	import useVscodeState from '../lib/useVscodeState.svelte'
 	import * as Messages from '../lib/Messages'
+	import * as Paths from '../lib/Paths'
 
 	const appState = useVscodeState()
 
@@ -31,7 +31,7 @@
 <h1>Vite + Svelte + Vscode</h1>
 <h2 class="knuckles text-yellow-500">& KNUCKLES</h2>
 <a href="https://www.youtube.com/watch?v=LabIat9t-uY" target="_blank" rel="noreferrer">
-	<Image src="knuckles.png" alt="& Knuckles" class="icon logo" />
+	<img src={Paths.image('knuckles.png')} alt="& Knuckles" class="icon logo" />
 </a>
 
 <Counter />

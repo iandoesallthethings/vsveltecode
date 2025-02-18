@@ -1,3 +1,6 @@
+import * as vscode from 'vscode'
+import { defaultAppState, type AppState, type Message } from '../types'
+
 /**
  * A shared state manager meant to pair with useVscodeState on the svelte side.
  *
@@ -13,10 +16,6 @@
  * 3. Proxy so `state.get().messages` => `state.messages`, just like svelte's rune
  * 4. Make it generic over any shape of state in case you have 1 extension with multiple panels, etc
  */
-
-import * as vscode from 'vscode'
-import { defaultAppState, type AppState, type Message } from '../types'
-
 export default class State {
 	private _context: vscode.ExtensionContext // Not really necessary, but convenient so we don't have to pass it around.
 	private _panel: vscode.WebviewPanel | null = null // If there's no panel rendered, just skip sending the state
