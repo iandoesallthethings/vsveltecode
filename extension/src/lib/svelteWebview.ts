@@ -17,6 +17,7 @@ export default function svelteWebview<M extends Message = Message>(
 	handleAppMessage: (message: M) => void = (_) => {}
 ) {
 	const distPath = vscode.Uri.joinPath(context.extensionUri, 'dist-svelte')
+
 	const panel = vscode.window.createWebviewPanel(viewName, title, vscode.ViewColumn.Two, {
 		enableScripts: true,
 		localResourceRoots: [distPath],
@@ -24,7 +25,7 @@ export default function svelteWebview<M extends Message = Message>(
 	})
 
 	// General messages all svelte views will use.
-	panel.webview.onDidReceiveMessage(async (message: Message) => {
+	const internalMessages = panel.webview.onDidReceiveMessage(async (message: Message) => {
 		switch (message.command) {
 			case 'ready': // Make sure the webview has rendered before sending the view to prevent race conditions.
 				console.log('✨ Setting view')
@@ -34,7 +35,9 @@ export default function svelteWebview<M extends Message = Message>(
 	})
 
 	// Handle extension-specific messages from the passed in handler.
-	panel.webview.onDidReceiveMessage(handleAppMessage)
+	const appMessages = panel.webview.onDidReceiveMessage(handleAppMessage)
+
+	context.subscriptions.push(internalMessages, appMessages)
 
 	panel.webview.html = html(context, panel)
 
@@ -52,20 +55,27 @@ function html(context: vscode.ExtensionContext, panel: vscode.WebviewPanel) {
 	const assetsPath = vscode.Uri.joinPath(distPath, 'assets')
 
 	// Svelte compiles these with dynamic names, so we do this find and replace dance
-	const scriptName = fs.readdirSync(assetsPath.fsPath).find((name) => name.endsWith('.js'))
-	const styleName = fs.readdirSync(assetsPath.fsPath).find((name) => name.endsWith('.css'))
+	const scriptName = findAsset(assetsPath, '.js')
+	const styleName = findAsset(assetsPath, '.css')
 
-	const htmlUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(distPath, 'index.html'))
-	const scriptUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(assetsPath, scriptName!))
-	const styleUri = panel.webview.asWebviewUri(vscode.Uri.joinPath(assetsPath, styleName!))
-
-	const imageUri = panel.webview.asWebviewUri(distPath)
+	const htmlUri = getWebviewUri(panel, distPath, 'index.html')
+	const scriptUri = getWebviewUri(panel, assetsPath, scriptName!)
+	const styleUri = getWebviewUri(panel, assetsPath, styleName!)
+	const imageUri = getWebviewUri(panel, distPath) // Images from the public dir are thrown straight into the dist root.
 
 	let html = fs
 		.readFileSync(htmlUri.fsPath, 'utf-8')
 		.replace(/\/assets\/index.*?\.js/, scriptUri.toString())
 		.replace(/\/assets\/index.*?\.css/, styleUri.toString())
-		.replace('<imagePath>', imageUri.toString())
+		.replace('%imagePath%', imageUri.toString())
 
 	return html
+}
+
+function findAsset(path: vscode.Uri, ext: string) {
+	return fs.readdirSync(path.fsPath).find((name) => name.endsWith(ext))
+}
+
+function getWebviewUri(panel: vscode.WebviewPanel, baseUri: vscode.Uri, ...parts: string[]) {
+	return panel.webview.asWebviewUri(vscode.Uri.joinPath(baseUri, ...parts))
 }

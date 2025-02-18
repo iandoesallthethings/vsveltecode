@@ -1,8 +1,15 @@
+/* @import 'tailwindcss' */
+
+/* Disabling preflight to conform to vscode styles - feel free to ditch this */
 @layer theme, base, components, utilities;
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
-/* @import "tailwindcss/preflight.css" layer(base);  */ /* Disabling preflight to conform to vscode styles */
+/* @import "tailwindcss/preflight.css" layer(base);  */
 
+/* 
+ * For now, I'm just pulling in the styles I use a lot.
+ * Super open to a less manual way to pull these styles and forward them to tailwind. Maybe some manual codegen? 
+ */
 @theme {
 	--breakpoint-xs: 430px;
 

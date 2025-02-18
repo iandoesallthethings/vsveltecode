@@ -8,7 +8,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// If you have multiple commands, it's best to pull this whole callback into a
 	// separate file and return the disposable.
-	const disposable = vscode.commands.registerCommand('vsveltecode.helloWorld', () => {
+	const helloWorldDisposable = vscode.commands.registerCommand('vsveltecode.helloWorld', () => {
 		const state = new State(context)
 
 		// Instantiate the svelte webview panel and add it to the state object for later use.
@@ -37,7 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	})
 
-	context.subscriptions.push(disposable)
+	context.subscriptions.push(helloWorldDisposable)
 }
 
 export function deactivate() {}
