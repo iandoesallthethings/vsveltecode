@@ -24,22 +24,12 @@ export default function svelteWebview<M extends Message = Message>(
 		retainContextWhenHidden: true,
 	})
 
-	// General messages all svelte views will use.
-	const internalMessages = panel.webview.onDidReceiveMessage(async (message: Message) => {
-		switch (message.command) {
-			case 'ready': // Make sure the webview has rendered before sending the view to prevent race conditions.
-				console.log('✨ Setting view')
-				panel.webview.postMessage({ command: 'changeView', content: viewName })
-				break
-		}
-	})
-
 	// Handle extension-specific messages from the passed in handler.
 	const appMessages = panel.webview.onDidReceiveMessage(handleAppMessage)
 
-	context.subscriptions.push(internalMessages, appMessages)
+	context.subscriptions.push(appMessages)
 
-	panel.webview.html = html(context, panel)
+	panel.webview.html = html(context, panel, viewName)
 
 	return panel
 }
@@ -50,7 +40,7 @@ export default function svelteWebview<M extends Message = Message>(
  * @param panel The webview panel object.
  * @returns The HTML string for the webview panel.
  */
-function html(context: vscode.ExtensionContext, panel: vscode.WebviewPanel) {
+function html(context: vscode.ExtensionContext, panel: vscode.WebviewPanel, viewName: ViewName) {
 	const distPath = vscode.Uri.joinPath(context.extensionUri, 'dist-svelte')
 	const assetsPath = vscode.Uri.joinPath(distPath, 'assets')
 
@@ -68,6 +58,7 @@ function html(context: vscode.ExtensionContext, panel: vscode.WebviewPanel) {
 		.replace(/\/assets\/index.*?\.js/, scriptUri.toString())
 		.replace(/\/assets\/index.*?\.css/, styleUri.toString())
 		.replace('%imagePath%', imageUri.toString())
+		.replace('%viewName%', viewName)
 
 	return html
 }

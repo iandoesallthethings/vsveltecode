@@ -8,12 +8,13 @@
 		HelloWorld,
 	}
 
-	let viewName = $state<ViewName>(Object.keys(views)[0] as ViewName)
-	let View = $derived(views[viewName])
+	// let currentView = $state<ViewName>(Object.keys(views)[0] as ViewName)
+	let currentView = $state<ViewName>(viewName)
+	let View = $derived(views[currentView])
 
 	function changeView({ data }: MessageEvent<Message>) {
 		if (data.command !== 'changeView') return
-		viewName = data.content
+		currentView = data.content
 	}
 </script>
 
