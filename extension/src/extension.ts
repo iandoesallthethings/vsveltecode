@@ -4,15 +4,11 @@ import State from './lib/state'
 import { Message } from './types'
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log('✨ Congratulations, your extension "vsveltecode" is now active!')
+	console.log('✨ Congratulations, your extension is now active!')
 
-	// If you have multiple commands, it's best to pull this whole callback into a
-	// separate file and return the disposable.
+	// If you have multiple commands, webviews, etc, it's nicer to modularize. Just return the disposable from the function.
 	const helloWorldDisposable = vscode.commands.registerCommand('vsveltecode.helloWorld', () => {
 		const state = new State(context)
-
-		// Instantiate the svelte webview panel and add it to the state object for later use.
-		state.panel = svelteWebview(context, 'Hello World', 'HelloWorld', handleSvelteMessage)
 
 		function handleSvelteMessage(message: Message) {
 			switch (message.command) {
@@ -29,6 +25,9 @@ export function activate(context: vscode.ExtensionContext) {
 				// is also handled by the same onDidReceiveMessage event.
 			}
 		}
+
+		// Instantiate the svelte webview panel and add it to the state object for later use.
+		state.panel = svelteWebview(context, 'Hello World', 'HelloWorld', handleSvelteMessage)
 
 		// You can handle any other events wherever you want. For example,
 		vscode.window.onDidChangeActiveTextEditor((editor) => {

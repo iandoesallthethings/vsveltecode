@@ -49,12 +49,54 @@ The default way to send state back and forth is via messages, which is covered i
 	}
 </script>
 
-<svelte:window on:message={handleMessage} />
+<svelte:window onmessage={handleMessage} />
 
 <button onclick={sendMessage}>Send</button>
 ```
 
-But that's a little clunky and I wanted to abstract things a little, so I'm working on a pattern so I can think less. The two main points of interest here are the `State` class in the extension and the `useVscodeState` rune in svelte. These are intended as a bonded pair so the two can seamlessly pass state back and forth.
+But that's a little clunky and I wanted to abstract things a little, so I'm working on a pattern so I can think less. The two main points of interest here are the `State` class in the extension and the `useVscodeState` rune in svelte. These are intended as a bonded pair so the two can seamlessly pass state back and forth. Here's a convoluted example:
+
+```typescript
+// In your extension.ts
+function handleSvelteMessage(message: Message) {
+	switch (message.command) {
+		case 'loadSomething':
+			loadSomething()
+			break
+		// ...
+	}
+}
+
+async function loadSomething() {
+	state.update({ loading: true })
+	const result = await fetchSomething()
+	state.update({ myData: result, loading: false })
+}
+```
+
+```svelte
+<!-- Then in svelte, the state will responsively update -->
+<script lang="ts">
+	import * as Messages from '../lib/Messages'
+	import { useVscodeState } from '../lib/useVscodeState'
+
+	const state = useVscodeState()
+
+	function loadSomething() {
+		Messages.post('loadSomething')
+	}
+</script>
+
+
+{#if state.loading}
+	Loading...
+{:else if state.myData != null}
+	{state.myData}
+{:else}
+	<button onclick={loadSomething}>
+{/if}
+```
+
 
 The actual app state is just a POJO, vaguely inspired by streamlit's session state. There's an interface in `types.ts` for the actual data that you can add to. The `State` class lets you update those values and does 2 things:
 

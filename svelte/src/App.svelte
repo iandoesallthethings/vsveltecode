@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { Message, ViewName } from './types'
 	import { HelloWorld, Splash } from './views'
-	import type { Component } from 'svelte'
+	import { onMount, type Component } from 'svelte'
+	import * as Messages from './lib/Messages'
 
 	const views: Record<ViewName, Component> = {
 		Splash,
@@ -16,21 +17,12 @@
 		if (data.command !== 'changeView') return
 		currentView = data.content
 	}
+
+	onMount(() => Messages.post('ready')) // Notify the extension that the webview is ready
 </script>
 
 <svelte:window onmessage={changeView} />
 
-<main>
+<main class="flex flex-col items-center gap-4 max-w-[100vw] h-[100vh]">
 	<View />
 </main>
-
-<style>
-	main {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 16px;
-		max-width: 100vw;
-		height: 100vh;
-	}
-</style>

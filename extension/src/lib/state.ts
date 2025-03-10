@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { defaultAppState, type AppState, type Message } from '../types'
+import { getDefaultState, type AppState, type Message } from '../types'
 
 /**
  * A shared state manager meant to pair with useVscodeState on the svelte side.
@@ -24,12 +24,12 @@ export default class State {
 	private _defaultState: AppState
 
 	constructor(context: vscode.ExtensionContext, options: Partial<StateOptions> = {}) {
-		const combinedOptions = { ...(defaultOptions as StateOptions), ...options }
+		const { stateKey = 'appState', defaultState = getDefaultState() } = options
 
 		this._context = context // Not needed, but convenient to pass around
 		this._state = context.workspaceState
-		this._stateKey = combinedOptions.stateKey
-		this._defaultState = combinedOptions.defaultState
+		this._stateKey = stateKey
+		this._defaultState = defaultState
 
 		// this.reset() // Uncomment this and rerun once if you bork up the state lol
 
@@ -110,8 +110,8 @@ export default class State {
 	}
 
 	/**
-	 * Theoretically, this lets the svelte app naively update state values.
-	 * Currently disabled because debugging is annoying
+	 * Theoretically, we could let the svelte app naively update values and send those back up.
+	 * Currently disabled because debugging is annoying 🙄
 	 */
 	private _updateFromSvelte(updatedStateKeys: Partial<AppState>) {
 		throw new Error(`Temporarily disabled`)
@@ -123,9 +123,4 @@ export default class State {
 interface StateOptions {
 	defaultState: AppState
 	stateKey: string
-}
-
-const defaultOptions: StateOptions = {
-	defaultState: defaultAppState,
-	stateKey: 'appState',
 }

@@ -1,31 +1,33 @@
 export type ViewName = 'HelloWorld' | 'Splash'
 
+/** The schema of the state you want to persist in vscode. Edit this interface to your liking. */
 export interface AppState {
 	loading: boolean
 	currentFile: string | null
 	count: number
 }
 
-export const defaultAppState: AppState = { loading: false, currentFile: null, count: 0 }
-
+/** Returns a fresh copy of the default state. */
 export function getDefaultState(): AppState {
-	return structuredClone(defaultAppState)
+	return {
+		loading: false,
+		currentFile: null,
+		count: 0,
+	}
 }
 
-export interface BaseMessage<Command extends string, Content extends any = undefined> {
+interface BaseMessage<Command extends string, Content extends any = undefined> {
 	command: Command
 	content: Content
 }
 
-// State
+// State and view boilerplate
 type UpdateStateMessage = BaseMessage<'updateState', Partial<AppState>>
 type ResetMessage = BaseMessage<'reset'>
-// View
 type ReadyMessage = BaseMessage<'ready'>
-type GetAssetUriMessage = BaseMessage<'getAssetUri', string>
 type ChangeViewMessage = BaseMessage<'changeView', ViewName>
 
-// Actual app functionality
+// Your features
 type TestMessage = BaseMessage<'test', string>
 type IncrementMessage = BaseMessage<'increment'>
 
@@ -33,7 +35,6 @@ export type Message =
 	| UpdateStateMessage
 	| ReadyMessage
 	| ResetMessage
-	| GetAssetUriMessage
 	| ChangeViewMessage
 	| TestMessage
 	| IncrementMessage
