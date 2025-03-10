@@ -1,4 +1,13 @@
 {
 	"files": [],
-	"references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
+	"references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
+	"compilerOptions": {
+		// This isn't working for some reason -_-
+		"baseUrl": ".",
+		"paths": {
+			"$lib/*": ["src/lib/*"],
+			"$views/*": ["src/views/*"],
+			"$types": ["src/types.ts"]
+		}
+	}
 }

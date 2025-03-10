@@ -59,16 +59,16 @@
 	},
 	"devDependencies": {
 		"@types/mocha": "^10.0.10",
-		"@types/node": "22.13.4",
-		"@types/vscode": "^1.97.0",
-		"@typescript-eslint/eslint-plugin": "^8.24.1",
-		"@typescript-eslint/parser": "^8.24.1",
+		"@types/node": "22.13.10",
+		"@types/vscode": "^1.98.0",
+		"@typescript-eslint/eslint-plugin": "^8.26.1",
+		"@typescript-eslint/parser": "^8.26.1",
 		"@vscode/test-cli": "^0.0.10",
 		"@vscode/test-electron": "^2.4.1",
 		"@vscode/vsce": "^3.2.2",
-		"esbuild": "^0.25.0",
-		"eslint": "^9.20.1",
+		"esbuild": "^0.25.1",
+		"eslint": "^9.22.0",
 		"npm-run-all": "^4.1.5",
-		"typescript": "^5.7.3"
+		"typescript": "^5.8.2"
 	}
 }
